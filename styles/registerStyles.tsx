@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
         padding: '10%',
         margin: '10%',
         backgroundColor: 'white',
-        //aspectRatio: 1/2,
         justifyContent: 'center',
     },
     headText: {
@@ -21,22 +20,37 @@ const styles = StyleSheet.create({
     text1: {
         fontSize: 15,
         fontWeight: "400",
-        color: '#353535'
+        color: '#353535',
     },
-    text2: {
-        fontWeight: '700',
-        color: '#262626'
+    checkboxView: {
+        marginTop: '7%',
+        marginBottom: '2%',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
     },
-    emailContainer: {
+    checkboxContainer: {
+        backgroundColor: '#D9D9D9',
+        width: 13,
+        height: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    checkboxText: {
+        fontWeight: "700",
+        color: '#000000',
+        marginHorizontal: '3%'
+    },
+    inputContainer: {
         marginTop: '5%',
     },
-    emailText: {
+    inputText: {
         fontWeight: "700",
         color: '#202020'
     },
-    inputEmail: {
+    inputNameEmail: {
         paddingHorizontal: 10,
-        paddingVertical: 5,
+        padding: 5,
         marginTop: '2%',
         borderWidth: 1,
         borderColor: 'black',
@@ -53,48 +67,37 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         marginTop: '2%',
-        paddingHorizontal: 6,//'2%',
+        paddingHorizontal: 6,
     },
     inputPassword: {
         flex: 1,
         paddingVertical: 5,
         color: 'black',
     },
-    rememberForgotContainer: {
+    termsContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        //alignItems: 'center',
         marginTop: '3%',
     },
-    checkboxContainer: {
-        borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 4,
-        //width:10,
-        // height: 2,
-        width: 20,
-        height: 20,
-        justifyContent: 'center',
-        alignItems: 'center'
-        //paddingHorizontal: '1%'
-        //paddingLeft:5
+    termsText1: {
+        fontSize: 13,
+        fontWeight: "400",
+        color: '#353535'
     },
-    forgotText: {
-        color: '#2F80ED',
-        fontWeight: '500',
+    termsText2: {
+        color: '#3F46FF',
+        fontWeight: "600",
     },
-    signinContainer: {
+    createAccContainer: {
         marginTop: '5%',
         borderRadius: 10,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        //borderWidth: 1,
-        //borderColor: 'black',
-        backgroundColor: '#2F80ED',
+        backgroundColor: '#3F46FF',
         height: '6%'
     },
-    signinText: {
+    createAccText: {
         color: '#FFFFFF',
         fontWeight: '700',
     },
@@ -115,26 +118,15 @@ const styles = StyleSheet.create({
         color: '#000000',
         fontWeight: '700',
     },
-    newJoinContainer: {
-        flexDirection: "row",
-        borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 5,
-        justifyContent: 'space-evenly',
+    alreadyContainer: {
         alignItems: 'center',
         marginVertical: '5%',
-        paddingVertical: 10,//'4%',
-        //height: '6%',
+        paddingVertical: '4%',
     },
-    newJoinText1: {
-        color: '#353535',
-        fontWeight: '700',
+    alreadyText1: {
         fontSize: 15,
-    },
-    newJoinText2: {
-        color: '#2F80ED',
-        fontWeight: '600',
-        fontSize: 15,
+        fontWeight: "400",
+        color: '#353535'
     },
 });
 

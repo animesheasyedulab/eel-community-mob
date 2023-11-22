@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "220243668648",
+    "project_id": "eel-community",
+    "storage_bucket": "eel-community.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220243668648:android:2038a234d78ee5692e5c9d",
+        "android_client_info": {
+          "package_name": "com.eelcommunitymob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220243668648-gpu87bbv9a8vd8772aun4rjb47amht3s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eelcommunitymob",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "220243668648-ktb8gv8t3rh0gd08egt7v7ednatks3p5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjs19FW2el1UeZuduPTfDefqnr9MMQLwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220243668648-ktb8gv8t3rh0gd08egt7v7ednatks3p5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

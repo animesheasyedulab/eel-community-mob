@@ -15,7 +15,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        // We need to configure Firebase with Android credentials. To allow Firebase on Android to use the credentials, the google-services plugin must be enabled on the project
+        classpath 'com.google.gms:google-services:4.4.0'
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
     }
 }
+
+// Lastly, execute the plugin by adding the following to the very bottom of your /android/app/build.gradle file:
+apply plugin: 'com.google.gms.google-services'

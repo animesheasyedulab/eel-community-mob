@@ -1,7 +1,6 @@
 import React from 'react';
-
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './Screen/LoginScreen';
 import RegisterScreen from './Screen/RegisterScreen';
 import SplashScreen from './Screen/SplashScreen';
@@ -15,20 +14,26 @@ const Auth = () => {
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
-        options={{headerShown: false}}
+        options={{
+          headerShown: true,
+          title: 'Log In',
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleAlign: 'center'
+        }}
       />
       <Stack.Screen
         name="RegisterScreen"
         component={RegisterScreen}
         options={{
-          title: 'Register', //Set Header Title
-          headerStyle: {
-            backgroundColor: '#307ecc', //Set Header color
-          },
-          headerTintColor: '#fff', //Set Header text color
+          title: 'Sign Up', //Set Header Title          
+          headerTintColor: 'black', //Set Header text color
           headerTitleStyle: {
             fontWeight: 'bold', //Set Header text style
           },
+          headerTitleAlign: 'center'
         }}
       />
     </Stack.Navigator>
@@ -44,13 +49,13 @@ const App = () => {
           name="SplashScreen"
           component={SplashScreen}
           // Hiding header for Splash Screen
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         {/* Auth Navigator: Include Login and Signup */}
         <Stack.Screen
           name="Auth"
           component={Auth}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         {/* Navigation Drawer as a landing page */}
         {/*<Stack.Screen
@@ -65,3 +70,9 @@ const App = () => {
 };
 
 export default App;
+
+/*Redundant code-
+/*headerStyle: {
+            backgroundColor: '#307ecc', //Set Header color
+},
+ */
