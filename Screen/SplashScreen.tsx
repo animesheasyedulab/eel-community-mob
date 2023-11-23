@@ -1,8 +1,10 @@
-import AsyncStorage from "@react-native-community/async-storage";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
+import { RootState } from "../features/store";
 
 const SplashScreen = ({navigation}: any) => {
+    const username = useSelector((state: RootState) => state.user.user.userInfo.user.name);
     // State for ActivityIndicator animation
     const [animating, setAnimating] = useState(true);
 
@@ -12,8 +14,8 @@ const SplashScreen = ({navigation}: any) => {
             // Check if user_id is set or not
             // If not then send for Authentication
             // else send to Home Screen
-            AsyncStorage.getItem('user_id').then((value: any) => navigation.replace(value === null ? 'Auth' : 'LoginScreen'),//'DrawerNavigationRoutes'),
-            );
+            navigation.replace(username === null ? 'Auth' : 'DrawerNavigationRoutes');
+            //AsyncStorage.getItem('user_id').then((value: any) => navigation.replace(value === null ? 'Auth' : 'LoginScreen'),);//'DrawerNavigationRoutes'),            
         }, 1000);
     }, []);
     return(

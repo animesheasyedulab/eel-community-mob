@@ -3,12 +3,24 @@ import { Image, Text, TextInput, TouchableOpacity, View, ToastAndroid } from "re
 import Icon from "react-native-vector-icons/MaterialIcons";
 import styles from "../styles/registerStyles";
 import { GoogleSignin, User, statusCodes } from '@react-native-google-signin/google-signin';
+import { useDispatch } from "react-redux";
+import { loginError, loginStatus, loginSuccess } from "../features/userSlice";
 
 const RegisterScreen = ({ navigation }: any) => {
-    const [userInfo, setUserInfo] = useState<User | null>(null);
-    const [gettingLoginStatus, setGettingLoginStatus] = useState(false);
+    // nameController, emailController & passwordController
+    const [nameController, setNameController] = useState('');
+    const [emailController, setEmailController] = useState('');
+    const [passwordController, setPasswordController] = useState('');
+    // Validation states for name, email & password
+    const [nameError, setNameError] = useState(false);
+    const [nameErrorText, setNameErrorText] = useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorText, setEmailErrorText] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorText, setPasswordErrorText] = useState('');
+    const dispatch = useDispatch();
     // State variable to hold the password 
-    const [password, setPassword] = useState('');
+    //const [password, setPassword] = useState('');
 
     // State variable to track password visibility 
     const [showPassword, setShowPassword] = useState(true);
@@ -19,20 +31,10 @@ const RegisterScreen = ({ navigation }: any) => {
     const [checkbox3, setCheckbox3] = useState(false);
 
     useEffect(() => {
-        // Initial configuration
         GoogleSignin.configure({
-            // Mandatory method to call before calling signIn() 
             scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-            // Replace with your webClientId
-            // Generated from Firebase console
             webClientId: '220243668648-ktb8gv8t3rh0gd08egt7v7ednatks3p5.apps.googleusercontent.com',
         });
-        // Check if user is already signed in
-
-        return () => {
-            console.log("This only happens ONCE. Anything in here is fired on component UNMOUNT.");
-            _signOut();
-          }
     }, []);
 
     // Function to toggle the password visibility state 
@@ -60,31 +62,37 @@ const RegisterScreen = ({ navigation }: any) => {
     const _isSignedIn = async () => {
         const isSignedIn = await GoogleSignin.isSignedIn();
         if (isSignedIn) {
+            console.log('User is already signed in');
             ToastAndroid.show('User is already signed in', ToastAndroid.SHORT);
-            // Set User Info if user is already signed in
+            dispatch(loginStatus('User is already signed in'));
+
             await _getCurrentUserInfo();
+            navigation.replace('DrawerNavigationRoutes');
             return true;
         }
         else {
-            setGettingLoginStatus(false);
+            console.log('Please Login');
+            dispatch(loginStatus('Please Login'));
             return false;
-        }        
+        }
     }
 
     const _getCurrentUserInfo = async () => {
         try {
             let info: any = await GoogleSignin.signInSilently();
-            console.log('User info --> ', info);
-            setUserInfo(info);
+            //console.log('User info --> ', info);
+            dispatch(loginSuccess(info));
         }
         catch (error: any) {
             if (error.code === statusCodes.SIGN_IN_REQUIRED) {
                 ToastAndroid.show('User has not signed in yet', ToastAndroid.SHORT);
                 console.log('User has not signed in yet');
+                dispatch(loginError('User has not signed in yet'));
             }
             else {
                 ToastAndroid.show("Unable to get user's info", ToastAndroid.SHORT);
                 console.log("Unable to get user's info");
+                dispatch(loginError("Unable to get user's info"));
             }
         }
     };
@@ -92,57 +100,87 @@ const RegisterScreen = ({ navigation }: any) => {
     const _signIn = async () => {
         console.log('Login Pressed');
 
-        //await _isSignedIn();
-
         if (
             await _isSignedIn() != true
-            ) {
-            // It will proppt google Signin Widget
+        ) {
+
             try {
                 await GoogleSignin.hasPlayServices({
-                    // Check if device has Google Play Services installed
-                    // Always resolves to true on iOS
                     showPlayServicesUpdateDialog: true,
                 });
                 const userInfo: User = await GoogleSignin.signIn();
-                ToastAndroid.show('Logged in successfully. \nWelcome '+userInfo['user']['name'], ToastAndroid.SHORT);
-                console.log('User Info --> ', userInfo);
-                setUserInfo(userInfo);
+                ToastAndroid.show('Logged in successfully. \nWelcome ' + userInfo['user']['name'], ToastAndroid.SHORT);
+                //console.log('User Info --> ', userInfo);
+                dispatch(loginSuccess(userInfo));
+                navigation.replace('DrawerNavigationRoutes');
             }
             catch (error: any) {
                 console.log('Message', JSON.stringify(error));
                 if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                     ToastAndroid.show('User Cancelled the Login Flow', ToastAndroid.SHORT);
+                    dispatch(loginError('User Cancelled the Login Flow'));
                 }
                 else if (error.code === statusCodes.IN_PROGRESS) {
                     ToastAndroid.show('Signing In', ToastAndroid.SHORT);
+                    dispatch(loginStatus('Signing In'));
                 }
                 else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                    ToastAndroid.show('Plat Services Not Available or Outdated', ToastAndroid.SHORT);
+                    ToastAndroid.show('Play Services Not Available or Outdated', ToastAndroid.SHORT);
+                    dispatch(loginError('Play Services Not Available or Outdated'));
                 }
                 else {
                     ToastAndroid.show(error.message, ToastAndroid.SHORT);
+                    dispatch(loginError(error.message));
                 }
             }
         }
     };
 
-    const _signOut = async () => {
-        setGettingLoginStatus(true);
-        // Remove user session from the device.
-        try {
-            await GoogleSignin.revokeAccess();
-            await GoogleSignin.signOut();
-            // Removing user Info
-            setUserInfo(null);
-            ToastAndroid.show('Logged Out', ToastAndroid.SHORT);
+    const validateName = () => {
+        if (nameController == '') {
+            setNameError(true);
+            setNameErrorText("Name can't be blank");
         }
-        catch (error: any) {
-            console.error(error);
-            ToastAndroid.show(error.toString(), ToastAndroid.SHORT);
+        else {
+            setNameError(false);
+            setNameErrorText('');
         }
-        setGettingLoginStatus(false);
-    }
+    };
+
+    const validateEmail = () => {
+        let emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        const emailValid = emailReg.test(emailController);
+        if (emailController == '') {
+            setEmailError(true);
+            setEmailErrorText("Email can't be blank");
+        }
+        else if (emailValid != true) {
+            setEmailError(true);
+            setEmailErrorText('Enter correct email');
+        }
+        else {
+            setEmailError(false);
+            setEmailErrorText('');
+        }
+    };
+
+    const validatePassword = () => {
+        let passReg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$/
+        const passValid = passReg.test(passwordController);
+        if (passwordController == '') {
+            setPasswordError(true);
+            setPasswordErrorText("Password can't be blank");
+        }
+        else if (passValid != true) {
+            setPasswordError(true);
+            setPasswordErrorText('Password should contain atleast 8 characters having 1 upper case,1 lowercase,1 numeric number,1 special character');
+        }
+        else {
+            setPasswordError(false);
+            setPasswordErrorText('');
+        }
+    };
+
     return (
         /* Base Container */
         <View style={styles.container}>
@@ -199,10 +237,16 @@ const RegisterScreen = ({ navigation }: any) => {
                     </Text>
                     {/* Input Email */}
                     <TextInput
+                        value={nameController}
+                        onChangeText={setNameController}
                         style={styles.inputNameEmail}
                         placeholder="First Last"
                         placeholderTextColor="#606060"
                     />
+                    {nameError && (
+                        <Text style={styles.errorText}>
+                            {nameErrorText}
+                        </Text>)}
                 </View>
 
                 {/* Email Container */}
@@ -213,10 +257,16 @@ const RegisterScreen = ({ navigation }: any) => {
                     </Text>
                     {/* Input Email */}
                     <TextInput
+                        value={emailController}
+                        onChangeText={setEmailController}
                         style={styles.inputNameEmail}
                         placeholder="you@email.com"
                         placeholderTextColor="#606060"
                     />
+                    {emailError && (
+                        <Text style={styles.errorText}>
+                            {emailErrorText}
+                        </Text>)}
                 </View>
 
                 {/* Password Container */}
@@ -232,8 +282,8 @@ const RegisterScreen = ({ navigation }: any) => {
                             // Set secureTextEntry prop to hide  
                             // password when showPassword is false 
                             secureTextEntry={!showPassword}
-                            value={password}
-                            onChangeText={setPassword}
+                            value={passwordController}
+                            onChangeText={setPasswordController}
                             style={styles.inputPassword}
                             placeholder="By.Y0u02"
                             placeholderTextColor="#606060"
@@ -245,18 +295,27 @@ const RegisterScreen = ({ navigation }: any) => {
                             color='#606060'
                         />
                     </View>
+                    {passwordError && (
+                        <Text style={styles.errorText}>
+                            {passwordErrorText}
+                        </Text>)}
                 </View>
 
                 {/* Terms Container */}
                 <View style={styles.termsContainer}>
                     <Text style={styles.termsText1}>
                         By signing up I agree to the <Text style={styles.termsText2}>terms & conditions</Text> and
-                        <Text style={styles.termsText2}>privacy policy</Text>
+                        <Text style={styles.termsText2}> privacy policy</Text>
                     </Text>
                 </View>
 
                 {/* Create Account Container */}
-                <View style={styles.createAccContainer}>
+                <View onStartShouldSetResponder={() => {
+                    validateName();
+                    validateEmail();
+                    validatePassword();
+                    return true;
+                }} style={styles.createAccContainer}>
                     {/* Create Account Text */}
                     <Text style={styles.createAccText}>Create An Account</Text>
                 </View>
@@ -282,7 +341,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 {/* Already & Sign Container */}
                 <View style={styles.alreadyContainer}>
                     <Text style={styles.alreadyText1}>
-                        Already A Member?<Text onPress={() => navigation.navigate('LoginScreen')} style={styles.termsText2}> Sign In.
+                        Already A Member?<Text onPress={() => navigation.replace('LoginScreen')} style={styles.termsText2}> Sign In.
                         </Text>
                     </Text>
                 </View>

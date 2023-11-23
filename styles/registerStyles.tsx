@@ -57,6 +57,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black',
     },
+    errorText: {
+        fontWeight: "700", 
+        color: 'red',         
+        marginVertical: 5,
+    }, 
     passwordContainer: {
         marginTop: '5%',
     },

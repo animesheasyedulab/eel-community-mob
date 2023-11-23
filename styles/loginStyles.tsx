@@ -43,6 +43,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black',
     },
+    errorText: {
+        fontWeight: "700", 
+        color: 'red', 
+        //fontSize: 20, 
+        marginVertical: 5,//12, 
+    }, 
     passwordContainer: {
         marginTop: '5%',
     },

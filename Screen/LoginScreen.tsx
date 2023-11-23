@@ -3,12 +3,22 @@ import { Text, View, TextInput, Image, TouchableOpacity, ToastAndroid } from "re
 import Icon from "react-native-vector-icons/MaterialIcons";
 import styles from "../styles/loginStyles";
 import { GoogleSignin, User, statusCodes } from '@react-native-google-signin/google-signin';
+import { useDispatch } from 'react-redux';
+import { loginSuccess, loginError, loginStatus } from "../features/userSlice";
 
 const LoginScreen = ({ navigation }: any) => {
-    const [userInfo, setUserInfo] = useState<User | null>(null);
-    const [gettingLoginStatus, setGettingLoginStatus] = useState(false);
+    // emailController & passwordController
+    const [emailController, setEmailController] = useState('');
+    const [passwordController, setPasswordController] = useState('');
+    // Validation states for email & password
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorText, setEmailErrorText] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorText, setPasswordErrorText] = useState('');
+
+    const dispatch = useDispatch();
     // State variable to hold the password 
-    const [password, setPassword] = useState('');
+    //const [password, setPassword] = useState('');
 
     // State variable to track password visibility 
     const [showPassword, setShowPassword] = useState(false);
@@ -27,8 +37,8 @@ const LoginScreen = ({ navigation }: any) => {
         // Check if user is already signed in
 
         return () => {
-            console.log("This only happens ONCE. Anything in here is fired on component UNMOUNT.");
-            _signOut();
+            //console.log("This only happens ONCE. Anything in here is fired on component UNMOUNT.");
+            //_signOut();
         }
     }, []);
 
@@ -44,14 +54,17 @@ const LoginScreen = ({ navigation }: any) => {
     const _isSignedIn = async () => {
         const isSignedIn = await GoogleSignin.isSignedIn();
         if (isSignedIn) {
+            console.log('User is already signed in');
             ToastAndroid.show('User is already signed in', ToastAndroid.SHORT);
+            dispatch(loginStatus('User is already signed in'));
             // Set User Info if user is already signed in
             await _getCurrentUserInfo();
+            navigation.replace('DrawerNavigationRoutes');
             return true;
         }
         else {
             console.log('Please Login');
-            setGettingLoginStatus(false);
+            dispatch(loginStatus('Please Login'));
             return false;
         }
     }
@@ -60,16 +73,18 @@ const LoginScreen = ({ navigation }: any) => {
         try {
             let info: any = await GoogleSignin.signInSilently();
             console.log('User info --> ', info);
-            setUserInfo(info);
+            dispatch(loginSuccess(info));
         }
         catch (error: any) {
             if (error.code === statusCodes.SIGN_IN_REQUIRED) {
                 ToastAndroid.show('User has not signed in yet', ToastAndroid.SHORT);
                 console.log('User has not signed in yet');
+                dispatch(loginError('User has not signed in yet'));
             }
             else {
                 ToastAndroid.show("Unable to get user's info", ToastAndroid.SHORT);
                 console.log("Unable to get user's info");
+                dispatch(loginError("Unable to get user's info"));
             }
         }
     };
@@ -91,43 +106,66 @@ const LoginScreen = ({ navigation }: any) => {
                 });
                 const userInfo: User = await GoogleSignin.signIn();
                 ToastAndroid.show('Logged in successfully. \nWelcome ' + userInfo['user']['name'], ToastAndroid.SHORT);
-                console.log('User Info --> ', userInfo);
-                setUserInfo(userInfo);
+                //console.log('User Info --> ', userInfo);                
+                dispatch(loginSuccess(userInfo));
+                navigation.replace('DrawerNavigationRoutes');
             }
             catch (error: any) {
                 console.log('Message', JSON.stringify(error));
                 if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                     ToastAndroid.show('User Cancelled the Login Flow', ToastAndroid.SHORT);
+                    dispatch(loginError('User Cancelled the Login Flow'));
                 }
                 else if (error.code === statusCodes.IN_PROGRESS) {
                     ToastAndroid.show('Signing In', ToastAndroid.SHORT);
+                    dispatch(loginStatus('Signing In'));
                 }
                 else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                    ToastAndroid.show('Plat Services Not Available or Outdated', ToastAndroid.SHORT);
+                    ToastAndroid.show('Play Services Not Available or Outdated', ToastAndroid.SHORT);
+                    dispatch(loginError('Play Services Not Available or Outdated'));
                 }
                 else {
                     ToastAndroid.show(error.message, ToastAndroid.SHORT);
+                    dispatch(loginError(error.message));
                 }
             }
         }
     };
 
-    const _signOut = async () => {
-        setGettingLoginStatus(true);
-        // Remove user session from the device.
-        try {
-            await GoogleSignin.revokeAccess();
-            await GoogleSignin.signOut();
-            // Removing user Info
-            setUserInfo(null);
-            ToastAndroid.show('Logged Out', ToastAndroid.SHORT);
+    const validateEmail = () => {
+        let emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        const emailValid = emailReg.test(emailController);
+        if (emailController == '') {
+            setEmailError(true);
+            setEmailErrorText("Email can't be blank");
         }
-        catch (error: any) {
-            console.error(error);
-            ToastAndroid.show(error.toString(), ToastAndroid.SHORT);
+        else if (emailValid != true) {
+            setEmailError(true);
+            setEmailErrorText('Enter correct email');
         }
-        setGettingLoginStatus(false);
-    }
+        else {
+            setEmailError(false);
+            setEmailErrorText('');
+        }
+    };
+
+    const validatePassword = () => {
+        let passReg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$/
+        const passValid = passReg.test(passwordController);
+        if (passwordController == '') {
+            setPasswordError(true);
+            setPasswordErrorText("Password can't be blank");
+        }
+        else if (passValid != true) {
+            setPasswordError(true);
+            setPasswordErrorText('Password should contain atleast 8 characters having 1 upper case,1 lowercase,1 numeric number,1 special character');
+        }
+        else {            
+            setPasswordError(false);
+            setPasswordErrorText('');
+        }
+    };
+
     return (
         /* Base Container */
         <View style={styles.container}>
@@ -154,10 +192,16 @@ const LoginScreen = ({ navigation }: any) => {
                     </Text>
                     {/* Input Email */}
                     <TextInput
+                        value={emailController}
+                        onChangeText={setEmailController}
                         style={styles.inputEmail}
                         placeholder="Enter your email or phone"
                         placeholderTextColor="#606060"
                     />
+                    {emailError && (
+                        <Text style={styles.errorText}>
+                            {emailErrorText}
+                        </Text>)}
                 </View>
 
                 {/* Password Container */}
@@ -173,8 +217,8 @@ const LoginScreen = ({ navigation }: any) => {
                             // Set secureTextEntry prop to hide  
                             // password when showPassword is false 
                             secureTextEntry={!showPassword}
-                            value={password}
-                            onChangeText={setPassword}
+                            value={passwordController}
+                            onChangeText={setPasswordController}
                             style={styles.inputPassword}
                             placeholder="•••••••••"
                             placeholderTextColor="#606060"
@@ -187,6 +231,10 @@ const LoginScreen = ({ navigation }: any) => {
                         //style={{ marginTop: 0, marginRight: 0 }} 
                         />
                     </View>
+                    {passwordError && (
+                        <Text style={styles.errorText}>
+                            {passwordErrorText}
+                        </Text>)}
                 </View>
 
                 {/* Remember Forgot Container */}
@@ -213,6 +261,8 @@ const LoginScreen = ({ navigation }: any) => {
 
                 {/* Signin Button Container */}
                 <View onStartShouldSetResponder={() => {
+                    validateEmail();
+                    validatePassword();
                     return true;
                 }} style={styles.signinContainer}>
                     {/* Sign In Text */}
@@ -242,7 +292,7 @@ const LoginScreen = ({ navigation }: any) => {
                     <Text style={styles.newJoinText1}>
                         New to EasyEduCom?
                     </Text>
-                    <Text onPress={() => navigation.navigate('RegisterScreen')} style={styles.newJoinText2}>
+                    <Text onPress={() => navigation.replace('RegisterScreen')} style={styles.newJoinText2}>
                         Join now
                     </Text>
                 </View>
