@@ -9,6 +9,7 @@ import store from './features/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from "redux-persist/integration/react";
 import DrawerNavigationRoutes from './Screen/DrawerNavigationRoutes';
+import CompleteProfileRoutes from './Screen/CompleteProfileRoutes';
 
 const Stack = createStackNavigator();
 
@@ -73,6 +74,12 @@ const App = () => {
               // Hiding header for Navigation Drawer
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="CompleteProfileRoutes"
+              component={CompleteProfileRoutes}
+              // Hiding header for Navigation Drawer
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </PersistGate>
       </Provider>
@@ -81,9 +88,3 @@ const App = () => {
 };
 
 export default App;
-
-/*Redundant code-
-/*headerStyle: {
-            backgroundColor: '#307ecc', //Set Header color
-},
- */

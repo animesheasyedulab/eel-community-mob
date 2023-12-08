@@ -137,15 +137,18 @@ const LoginScreen = ({ navigation }: any) => {
         const emailValid = emailReg.test(emailController);
         if (emailController == '') {
             setEmailError(true);
-            setEmailErrorText("Email can't be blank");
+            setEmailErrorText("Email is required");
+            return false;
         }
         else if (emailValid != true) {
             setEmailError(true);
-            setEmailErrorText('Enter correct email');
+            setEmailErrorText('Incorrect email format');
+            return false;
         }
         else {
             setEmailError(false);
             setEmailErrorText('');
+            return true;
         }
     };
 
@@ -154,15 +157,18 @@ const LoginScreen = ({ navigation }: any) => {
         const passValid = passReg.test(passwordController);
         if (passwordController == '') {
             setPasswordError(true);
-            setPasswordErrorText("Password can't be blank");
+            setPasswordErrorText("Password is required");
+            return false;
         }
         else if (passValid != true) {
             setPasswordError(true);
             setPasswordErrorText('Password should contain atleast 8 characters having 1 upper case,1 lowercase,1 numeric number,1 special character');
+            return false;
         }
         else {            
             setPasswordError(false);
             setPasswordErrorText('');
+            return true;
         }
     };
 
@@ -261,8 +267,11 @@ const LoginScreen = ({ navigation }: any) => {
 
                 {/* Signin Button Container */}
                 <View onStartShouldSetResponder={() => {
-                    validateEmail();
-                    validatePassword();
+                    const emailValid = validateEmail();
+                    const passValid = validatePassword();
+                    if (emailValid && passValid) {
+                        return navigation.replace('CompleteProfileRoutes');
+                    }
                     return true;
                 }} style={styles.signinContainer}>
                     {/* Sign In Text */}
