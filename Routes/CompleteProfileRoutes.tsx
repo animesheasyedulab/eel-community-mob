@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import CompleteProfile from './CompleteProfile';
-import CompleteProfile2 from './CompleteProfile2';
-import CompleteProfile3 from './CompleteProfile3';
+import CompleteProfile from '../Screen/CompleteProfile/CompleteProfile';
+import CompleteProfile2 from '../Screen/CompleteProfile2/CompleteProfile2';
+import CompleteProfile3 from '../Screen/CompleteProfile3/CompleteProfile3';
 
 const Stack = createStackNavigator();
 

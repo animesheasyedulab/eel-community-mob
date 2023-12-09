@@ -1,15 +1,16 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './Screen/LoginScreen';
-import RegisterScreen from './Screen/RegisterScreen';
+import LoginScreen from './Screen/LoginScreen/LoginScreen';
+import RegisterScreen from './Screen/RegisterScreen/RegisterScreen';
 import SplashScreen from './Screen/SplashScreen';
 import { persistStore } from 'redux-persist';
 import store from './features/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from "redux-persist/integration/react";
-import DrawerNavigationRoutes from './Screen/DrawerNavigationRoutes';
-import CompleteProfileRoutes from './Screen/CompleteProfileRoutes';
+import DrawerNavigationRoutes from './Routes/DrawerNavigationRoutes';
+import CompleteProfileRoutes from './Routes/CompleteProfileRoutes';
+import { navigationRef } from './Routes/RootNavigation';
 
 const Stack = createStackNavigator();
 
@@ -50,7 +51,7 @@ const Auth = () => {
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Stack.Navigator initialRouteName="SplashScreen">

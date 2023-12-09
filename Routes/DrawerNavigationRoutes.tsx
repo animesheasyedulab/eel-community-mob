@@ -2,10 +2,11 @@ import React from "react";
 import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import HomeScreen from "./HomeScreen";
-import NavigationDrawerHeader from "./Components/NavigationDrawerHeader";
-import SettingsScreen from "./SettingsScreen";
-import CustomSidebarMenu from "./Components/CustomSidebarMenu";
+import HomeScreen from "../Screen/HomeScreen";
+import NavigationDrawerHeader from "../Screen/Components/NavigationDrawerHeader";
+import SettingsScreen from "../Screen/SettingsScreen";
+import CustomSidebarMenu from "../Screen/Components/CustomSidebarMenu";
+import CompleteProfileRoutes from "./CompleteProfileRoutes";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -71,12 +72,16 @@ const DrawerNavigationRoutes = () => {
             drawerContent={CustomSidebarMenu}>
             <Drawer.Screen
                 name="HomeScreenStack"
-                options={{ drawerLabel: 'Home Screen', drawerLabelStyle: {color: 'white'} }}
+                options={{ drawerLabel: 'Home Screen', drawerLabelStyle: { color: 'white' } }}
                 component={HomeScreenStack} />
             <Drawer.Screen
                 name="SettingScreenStack"
-                options={{ drawerLabel: 'Setting Screen', drawerLabelStyle: {color: 'white'} }}
+                options={{ drawerLabel: 'Setting Screen', drawerLabelStyle: { color: 'white' } }}
                 component={SettingScreenStack} />
+            <Drawer.Screen
+                name="CompleteProfileStack"
+                options={{ drawerLabel: 'Complete Profile', drawerLabelStyle: { color: 'white' } }}
+                component={CompleteProfileRoutes} />
         </Drawer.Navigator>
     );
 }

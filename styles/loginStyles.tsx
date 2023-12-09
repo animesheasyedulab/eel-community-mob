@@ -1,6 +1,10 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+    scrollView: {
+        flexGrow: 1,
+        justifyContent: 'center',
+    },
     container: {
         flex: 1,
     },
@@ -26,7 +30,11 @@ const styles = StyleSheet.create({
     text2: {
         fontWeight: '700',
         color: '#262626'
-    },
+    },    
+    roleContainer: {
+        marginTop: '5%',
+        flexWrap: 'wrap'
+    },    
     emailContainer: {
         marginTop: '5%',
     },
@@ -44,11 +52,11 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     errorText: {
-        fontWeight: "700", 
-        color: 'red', 
+        fontWeight: "700",
+        color: 'red',
         //fontSize: 20, 
         marginVertical: 5,//12, 
-    }, 
+    },
     passwordContainer: {
         marginTop: '5%',
     },

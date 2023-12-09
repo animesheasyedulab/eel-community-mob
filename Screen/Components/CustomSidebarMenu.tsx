@@ -13,12 +13,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../features/store';
 import { logoutSuccess, logoutError } from '../../features/userSlice';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import stylesSidebar from '../../styles/customSidebarMenu';
 
 const CustomSidebarMenu = (props: any) => {
     const username = useSelector((state: RootState) => state.user.user.userInfo.user.name);
     var nameFirstChar;
     if (username != null) {
-        console.log('username not null');
+        //console.log('username not null');
         nameFirstChar = username;
         nameFirstChar = nameFirstChar.charAt(0);
     }
@@ -107,41 +108,3 @@ const CustomSidebarMenu = (props: any) => {
 };
 
 export default CustomSidebarMenu;
-
-const stylesSidebar = StyleSheet.create({
-    sideMenuContainer: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#307ecc',
-        paddingTop: 40,
-        color: 'white',
-    },
-    profileHeader: {
-        flexDirection: 'row',
-        backgroundColor: '#307ecc',
-        padding: 15,
-        textAlign: 'center',
-    },
-    profileHeaderPicCircle: {
-        width: 60,
-        height: 60,
-        borderRadius: 60 / 2,
-        color: 'white',
-        backgroundColor: '#ffffff',
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    profileHeaderText: {
-        color: 'white',
-        alignSelf: 'center',
-        paddingHorizontal: 10,
-        fontWeight: 'bold',
-    },
-    profileHeaderLine: {
-        height: 1,
-        marginHorizontal: 20,
-        backgroundColor: '#e2e2e2',
-        marginTop: 15,
-    },
-});

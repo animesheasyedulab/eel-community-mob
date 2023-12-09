@@ -1,40 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, Text, TextInput, ScrollView } from 'react-native';
-import styles from "../styles/completeprofileStyles2";
-import { useRoute } from "@react-navigation/native";
-import PercentageBar from './Components/PercentageBar';
-import { useFormik } from "formik";
-import { Country, State, City } from "country-state-city";
+import styles from "../../styles/completeprofileStyles2";
+import PercentageBar from '../Components/PercentageBar';
 import SelectDropdown from "react-native-select-dropdown";
+import useCustomHook from "./useCustomHook";
 
 const CompleteProfile2 = ({ navigation }: any) => {
-    // extracting data passing during navigation
-    const route: any = useRoute();
-    const progress = route.params.progress;
-    // all the country state city dropdown states
-    const [countryCode, setCountryCode] = useState('');
-    const addressFromik: any = useFormik({
-        initialValues: {
-            country: "India",
-            state: null,
-            city: null
-        },
-        onSubmit: (values) => console.log(JSON.stringify(values))
-    });
+    // States
+    const {
+        addressController, setAddressController,
+        setCountryController,
+        stateController, setStateController,
+        setCityController,
+        localityController, setLocalityController,
+        pinController, setPinController,
+        addressError, 
+        countryError, 
+        stateError, 
+        cityError, 
+        localityError, 
+        pinError, 
+        addressErrorText, 
+        countryErrorText, 
+        stateErrorText, 
+        cityErrorText, 
+        localityErrorText, 
+        pinErrorText, 
+        progress,
+        setCountryCode,
+        updatedCountries,
+        updatedStates,
+        updatedCities,
+        values, setFieldValue, setValues,
+        validateAddress,
+        validateCountry,
+        validateState,
+        validateCity,
+        validateLocality,
+        validatePin,
+    } = useCustomHook();
 
-    const countries = Country.getAllCountries();
-
-    const updatedCountries = countries.map((country: any) => ({
-        label: country.name,
-        value: country.id,
-        ...country
-    }));
-    const updatedStates = (countryId: any) => State.getStatesOfCountry(countryId).map((state: any) => ({ label: state.name, value: state.id, ...state }));
-
-    const updatedCities = (stateId: any) => City.getCitiesOfState(countryCode, stateId).map((city: any) => ({ label: city.name, value: city.id, ...city }));
-
-    const { values, setFieldValue, setValues } = addressFromik;
-
+    // Side effects
     useEffect(() => {
         // This is for making validation not make fuzz if country changed again
         if (values.state === null) {
@@ -45,122 +51,7 @@ const CompleteProfile2 = ({ navigation }: any) => {
         }
     }, [values]);
 
-    // all controllers
-    const [addressController, setAddressController] = useState('');
-    const [countryController, setCountryController] = useState('');
-    const [stateController, setStateController] = useState<any>('');
-    const [cityController, setCityController] = useState<any>('');
-    const [localityController, setLocalityController] = useState('');
-    const [pinController, setPinController] = useState('');
-    // all validation states, isError 
-    const [addressError, setAddressError] = useState(false);
-    const [countryError, setCountryError] = useState(false);
-    const [stateError, setStateError] = useState(false);
-    const [cityError, setCityError] = useState(false);
-    const [localityError, setLocalityError] = useState(false);
-    const [pinError, setPinError] = useState(false);
-    // errorTexts
-    const [addressErrorText, setAddressErrorText] = useState<any>();
-    const [countryErrorText, setCountryErrorText] = useState<any>();
-    const [stateErrorText, setStateErrorText] = useState<any>();
-    const [cityErrorText, setCityErrorText] = useState<any>();
-    const [localityErrorText, setLocalityErrorText] = useState<any>();
-    const [pinErrorText, setPinErrorText] = useState<any>();
-
-    // all validation functions
-    const validateAddress = () => {
-        if (addressController === '') {
-            setAddressError(true);
-            setAddressErrorText("Address is required");
-            return false;
-        }
-        else {
-            setAddressError(false);
-            setAddressErrorText('');
-            return true;
-        }
-    };
-
-    const validateCountry = () => {
-        if (countryController === '') {
-            setCountryError(true);
-            setCountryErrorText("Country is required");
-            return false;
-        }
-        else {
-            setCountryError(false);
-            setCountryErrorText('');
-            return true;
-        }
-    };
-
-    const validateState = () => {
-        if (stateController === '') {
-            setStateError(true);
-            setStateErrorText("State is required");
-            return false;
-        }
-        else {
-            setStateError(false);
-            setStateErrorText('');
-            return true;
-        }
-    };
-
-    const validateCity = () => {
-        if (cityController === '') {
-            setCityError(true);
-            setCityErrorText("City is required");
-            return false;
-        }
-        else {
-            setCityError(false);
-            setCityErrorText('');
-            return true;
-        }
-    };
-
-    const validateLocality = () => {
-        if (localityController === '') {
-            setLocalityError(true);
-            setLocalityErrorText("Locality is required");
-            return false;
-        }
-        else {
-            setLocalityError(false);
-            setLocalityErrorText('');
-            return true;
-        }
-    };
-
-    const validatePin = () => {
-        if (pinController === '') {
-            setPinError(true);
-            setPinErrorText("Pin is required");
-            return false;
-        }
-        else if (/^\d+$/.test(pinController) == false) {
-            setPinError(true);
-            setPinErrorText("Invalid pincode, must be number!");
-            return false;
-        }
-        else if (pinController.length !== 6) {
-            setPinError(true);
-            setPinErrorText("Invalid pincode, must be of 6 digits!");
-            return false;
-        }
-        else if (/^[1-9][0-9]{5}$/.test(pinController) == false) {
-            setPinError(true);
-            setPinErrorText("Invalid Pin");
-            return false;
-        }
-        else {
-            setPinError(false);
-            setPinErrorText('');
-            return true;
-        }
-    };
-
+    // View
     return (
         <ScrollView contentContainerStyle={styles.scrollView} contentInsetAdjustmentBehavior='automatic'>
             {/* Base Container */}
@@ -219,12 +110,12 @@ const CompleteProfile2 = ({ navigation }: any) => {
                             setCountryController(countryLabel);
                             setValues({ country: selected, state: null, city: null }, false);
                         }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
+                        buttonTextAfterSelection={(selectedItem) => {
                             // text represented after item is selected
                             // if data array is an array of objects then return selectedItem.property to render after item is selected
                             return selectedItem["label"]
                         }}
-                        rowTextForSelection={(item, index) => {
+                        rowTextForSelection={(item) => {
                             // text represented for each item in dropdown
                             // if data array is an array of objects then return item.property to represent item in dropdown
                             return item["label"]
@@ -258,10 +149,10 @@ const CompleteProfile2 = ({ navigation }: any) => {
                             setStateController(stateLabel);
                             setValues({ state: selected, city: null }, false);
                         }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
+                        buttonTextAfterSelection={(selectedItem) => {
                             return selectedItem["label"]
                         }}
-                        rowTextForSelection={(item, index) => {
+                        rowTextForSelection={(item) => {
                             return item["label"]
                         }}
                     />
@@ -293,10 +184,10 @@ const CompleteProfile2 = ({ navigation }: any) => {
                             setCityController(cityLabel);
                             setFieldValue("city", selected);
                         }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
+                        buttonTextAfterSelection={(selectedItem) => {
                             return selectedItem["label"]
                         }}
-                        rowTextForSelection={(item, index) => {
+                        rowTextForSelection={(item) => {
                             return item["label"]
                         }}
                     />

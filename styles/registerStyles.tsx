@@ -1,6 +1,10 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+    scrollView: {
+        flexGrow: 1,
+        justifyContent: 'center',
+    },
     container: {
         flex: 1,
     },
@@ -21,6 +25,10 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "400",
         color: '#353535',
+    },
+    roleContainer: {
+        marginTop: '5%',
+        flexWrap: 'wrap'
     },
     checkboxView: {
         marginTop: '7%',

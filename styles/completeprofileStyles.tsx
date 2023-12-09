@@ -11,7 +11,9 @@ const styles = StyleSheet.create({
     subContainer: {
         flex: 1,
         flexDirection: 'column',
-        padding: '10%',
+        paddingHorizontal: '10%',
+        paddingTop: '10%',
+        paddingBottom: '18%',
         margin: '10%',
         backgroundColor: 'white',
     },
